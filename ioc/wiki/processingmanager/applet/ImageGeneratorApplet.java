@@ -429,7 +429,11 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
             .addGroup(jpImageButtonsLayout.createSequentialGroup()
                 .addComponent(jbGenerar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+<<<<<<< HEAD
                 .addComponent(jbDesar, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE))
+=======
+                .addComponent(jbDesar, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE))
+>>>>>>> 053d2e6b6dc50df0aea1359be0e8be3acc1f0de1
         );
         jpImageButtonsLayout.setVerticalGroup(
             jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -471,7 +475,11 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                         .addComponent(jtfLlavor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jbBuidarLlavor)))
+<<<<<<< HEAD
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+=======
+                .addContainerGap(24, Short.MAX_VALUE))
+>>>>>>> 053d2e6b6dc50df0aea1359be0e8be3acc1f0de1
         );
         jpLlavorButtonsLayout.setVerticalGroup(
             jpLlavorButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -514,7 +522,11 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 .addGroup(jpAlgorismesButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jlDescripcio)
                     .addComponent(jspDescripcio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+<<<<<<< HEAD
                 .addGap(0, 0, Short.MAX_VALUE))
+=======
+                .addGap(0, 29, Short.MAX_VALUE))
+>>>>>>> 053d2e6b6dc50df0aea1359be0e8be3acc1f0de1
         );
         jpAlgorismesButtonsLayout.setVerticalGroup(
             jpAlgorismesButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
