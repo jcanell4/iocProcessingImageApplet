@@ -38,13 +38,14 @@ import javax.swing.JTextField;
  */
 public class ImageGeneratorApplet extends javax.swing.JApplet {
 
-    private final static String URLS_PARAM = "uls";
+    private final static String URLS_PARAM = "urls";
     private final static String COOKIES_PARAM = "Cookie";
     private final static String SECTOK_PARAM = "sectok";
     private final static String FILE_SENDER_URL_PARAM = "fileSenderURL";
     private final static String IMAGE_NAME_PARAM = "imageName";
     private final static String NAME_SENDER_URL_PARAM = "nameSenderURL";
-    private final static String PDE_CALSSES_URL_PARAM = "getPdeClassesURL";
+    private final static String PDE_CLASSES_URL_PARAM = "getPdeClassesURL";
+    //JSON
     private final static String VALUE_PARAM = "value";
     private final static String CODE_PARAM = "code";
     private final static String INFO_PARAM = "info";
@@ -319,7 +320,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         HttpCommandSender getPdeClasses = new HttpCommandSender();
         getPdeClasses.setCookies(getParameter(COOKIES_PARAM));
         getPdeClasses.setParameter(SECTOK_PARAM, getParameter(SECTOK_PARAM));
-        getPdeClasses.setUrl(getParameter(PDE_CALSSES_URL_PARAM));
+        getPdeClasses.setUrl(getParameter(PDE_CLASSES_URL_PARAM));
 
         String response = getPdeClasses.sendCommand();
         JsonObject json = (Json.createReader(new StringReader(response)))
