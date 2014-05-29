@@ -106,7 +106,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                     //GET PDE CLASSES
                     String cookies = getParameter(COOKIES_PARAM);
                     String sectok = getParameter(SECTOK_PARAM);
-                    String url = getParameter(SECTOK_PARAM);
+                    String url = getParameter(PDE_CLASSES_URL_PARAM);
                     getPdeClassList(cookies, sectok, url);//Genera el desplegable amb els algorismes
                     setDescripcio();
 
@@ -430,13 +430,14 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         jpImageButtonsLayout.setHorizontalGroup(
             jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpImageButtonsLayout.createSequentialGroup()
-                .addGap(39, 39, 39)
-                .addComponent(jlImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-            .addGroup(jpImageButtonsLayout.createSequentialGroup()
                 .addComponent(jbGenerar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jbDesar, javax.swing.GroupLayout.DEFAULT_SIZE, 64, Short.MAX_VALUE))
+                .addComponent(jbDesar, javax.swing.GroupLayout.DEFAULT_SIZE, 68, Short.MAX_VALUE)
+                .addContainerGap())
+            .addGroup(jpImageButtonsLayout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addComponent(jlImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jpImageButtonsLayout.setVerticalGroup(
             jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -546,7 +547,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jpLlavorButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 173, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jpImageButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 142, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(jpImageButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 158, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         jpButtonsLayout.setVerticalGroup(
             jpButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -563,7 +564,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jpApplet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jpButtons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jpButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 747, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
