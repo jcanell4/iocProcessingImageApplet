@@ -51,7 +51,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     private final static String INFO_PARAM = "info";
     private final static String ALGORISMES_PARAM = "algorismes";
     private final static String ALGORISME_PARAM = "algorisme";
-    
+
     private final static String COMMA = ",";
     private final static String IMAGE_EXTENSION = ".png";
     private final static int NAME_EXISTS_RESPONSE = -2;
@@ -104,7 +104,10 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                     }
 
                     //GET PDE CLASSES
-                    getPdeClassList();//Genera el desplegable amb els algorismes
+                    String cookies = getParameter(COOKIES_PARAM);
+                    String sectok = getParameter(SECTOK_PARAM);
+                    String url = getParameter(SECTOK_PARAM);
+                    getPdeClassList(cookies, sectok, url);//Genera el desplegable amb els algorismes
                     setDescripcio();
 
                     //FILE SENDER
@@ -316,11 +319,11 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     /**
      * Demana al servidor la llista d'algorismes i la posa en un desplegable.
      */
-    public void getPdeClassList() {
+    public void getPdeClassList(String cookies, String sectok, String url) {
         HttpCommandSender getPdeClasses = new HttpCommandSender();
-        getPdeClasses.setCookies(getParameter(COOKIES_PARAM));
-        getPdeClasses.setParameter(SECTOK_PARAM, getParameter(SECTOK_PARAM));
-        getPdeClasses.setUrl(getParameter(PDE_CLASSES_URL_PARAM));
+        getPdeClasses.setCookies(cookies);
+        getPdeClasses.setParameter(SECTOK_PARAM, sectok);
+        getPdeClasses.setUrl(url);
 
         String response = getPdeClasses.sendCommand();
         JsonObject json = (Json.createReader(new StringReader(response)))
@@ -340,7 +343,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         }
 
         Algorisme[] array_algorismes = new Algorisme[jsonArrayAlgorismes.size()];
-        jsonArrayAlgorismes.toArray(array_algorismes);
+        algorismes.toArray(array_algorismes);
         DefaultComboBoxModel cm = new DefaultComboBoxModel(array_algorismes);
         this.jcbAlgorismes.removeAllItems();
         this.jcbAlgorismes.setModel(cm);
@@ -357,8 +360,11 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
      * Defineix la descripció de l'algorisme seleccionat.
      */
     private void setDescripcio() {
-        Algorisme algorisme = (Algorisme) jcbAlgorismes.getSelectedItem();
-        jtaDescripcio.setText(algorisme.getDescripcio());
+        if (jcbAlgorismes.getSelectedItem() != null) {
+            Algorisme algorisme = (Algorisme) jcbAlgorismes.getSelectedItem();
+            jtaDescripcio.setText(algorisme.getDescripcio());
+        }
+
     }
 
     /**
