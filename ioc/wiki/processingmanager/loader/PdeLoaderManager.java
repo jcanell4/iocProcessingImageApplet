@@ -5,7 +5,6 @@ package ioc.wiki.processingmanager.loader;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-import java.io.IOException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -16,7 +15,6 @@ import ioc.wiki.processingmanager.excepcions.ProcessingRtURLException;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import processing.core.PApplet;
 
 /**
  *
@@ -43,9 +41,11 @@ public class PdeLoaderManager {
      * @param className Nom de la classe.
      * @return Classe carregada,filla de ImageGenerator.
      */
-    private Class<? extends ImageGenerator> getPdeClass(String className) throws ProcessingLoaderException {
-        Logger.getLogger("PdeLoaderManager").log(Level.FINE, "getPdeClass("+className+")");
-        Class<? extends ImageGenerator> cl = null;
+    private Class<? extends ImageGenerator> getPdeClass(String className) 
+                                            throws ProcessingLoaderException {
+        Logger.getLogger("PdeLoaderManager")
+                                .log(Level.FINE, "getPdeClass({0})", className);
+        Class<? extends ImageGenerator> cl;
         if (this.classesCarregades.containsKey(className)) {
             cl = this.classesCarregades.get(className);
         } else {
@@ -62,13 +62,16 @@ public class PdeLoaderManager {
      * @return Classe carregada,filla de ImageGenerator.
      * @throws ProcessingLoaderException es llança quan no es pot carregar la classe.
      */
-    private Class<? extends ImageGenerator> loadPdeClass(String className) throws ProcessingLoaderException{
-        Logger.getLogger("PdeLoaderManager").log(Level.FINE, "loadPdeClass("+className+")");
+    private Class<? extends ImageGenerator> loadPdeClass(String className)
+                                                throws ProcessingLoaderException{
+        Logger.getLogger("PdeLoaderManager")
+                                .log(Level.FINE, "loadPdeClass({0})", className);
         
         Class<? extends ImageGenerator> cl = null;
         URL[] array_urls = new URL[this.urls.size()];
         this.urls.toArray(array_urls);
-        URLClassLoader urlClassLoader = new URLClassLoader(array_urls);
+        URLClassLoader urlClassLoader = new URLClassLoader(array_urls
+                            , Thread.currentThread().getContextClassLoader());
         try {
             cl = (Class<? extends ImageGenerator>) urlClassLoader.loadClass(className);
             //urlClassLoader.close();
@@ -100,7 +103,8 @@ public class PdeLoaderManager {
      * @return una instancia de ImageGenerator
      * @throws ProcessingLoaderException es llança quan falla la instanciacio o hi ha un accés il·legal de la classe.
      */
-    public ImageGenerator getNewInstance(String className) throws ProcessingLoaderException {
+    public ImageGenerator getNewInstance(String className) 
+                                            throws ProcessingLoaderException {
         ImageGenerator pdeClass = null;
         try {
             pdeClass = (ImageGenerator) getPdeClass(className).newInstance();

@@ -43,6 +43,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     private final static String SECTOK_PARAM = "sectok";
     private final static String FILE_SENDER_URL_PARAM = "fileSenderURL";
     private final static String IMAGE_NAME_PARAM = "imageName";
+//    private final static String FILE_NAME_PARAM = "file";
     private final static String NAME_SENDER_URL_PARAM = "nameSenderURL";
     private final static String PDE_CLASSES_URL_PARAM = "getPdeClassesURL";
     //JSON
