@@ -16,6 +16,7 @@ import ioc.wiki.processingmanager.excepcions.ProcessingRtURLException;
 import java.net.MalformedURLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import processing.core.PApplet;
 
 /**
  *
@@ -103,7 +104,7 @@ public class PdeLoaderManager {
         ImageGenerator pdeClass = null;
         try {
             pdeClass = (ImageGenerator) getPdeClass(className).newInstance();
-        } catch (InstantiationException | IllegalAccessException ex) {
+        } catch (InstantiationException | IllegalAccessException ex) {//| PApplet.RendererChangeException
             throw new ProcessingLoaderException(ex);
         }
         return pdeClass;
