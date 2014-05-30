@@ -49,6 +49,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     private final static String VALUE_PARAM = "value";
     private final static String CODE_PARAM = "code";
     private final static String INFO_PARAM = "info";
+    private final static String N_ALGORISMES_PARAM = "n_algorismes";
     private final static String ALGORISMES_PARAM = "algorismes";
     private final static String ALGORISME_PARAM = "algorisme";
 
@@ -181,7 +182,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
             Algorisme algorisme = (Algorisme) jcbAlgorismes.getSelectedItem();
             String className = algorisme.getClasse();
             //Si ja esta aquest algorisme carregat, no faria falta generar una nova instancia.
-            if (!this.pdeApplet.getClass().getName().equals(className)) {
+            if (this.pdeApplet == null || !this.pdeApplet.getClass().getName().equals(className)) {
                 ImageGenerator imageGenerator = pdeLoaderManager.getNewInstance(className);
                 setImageGenerator(imageGenerator);
             }
@@ -329,24 +330,40 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         JsonObject json = (Json.createReader(new StringReader(response)))
                 .readArray().getJsonObject(0);
         JsonObject jsonValue = json.getJsonObject(VALUE_PARAM);
-        JsonObject jsonAlgorismes = jsonValue.getJsonObject(ALGORISMES_PARAM);
-        JsonArray jsonArrayAlgorismes = jsonAlgorismes.getJsonArray(ALGORISME_PARAM);
-        ArrayList<Algorisme> algorismes = new ArrayList<>();
-        for (int i = 0; i < jsonArrayAlgorismes.size(); i++) {
-            JsonObject algorisme_json = jsonArrayAlgorismes.getJsonObject(i);
-            String id = algorisme_json.getString(Algorisme.ID_PARAM);
-            String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
-            String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
-            String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
-            Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
-            algorismes.add(algorisme);
+        int n_algorismes = jsonValue.getInt(N_ALGORISMES_PARAM);
+
+        this.jcbAlgorismes.removeAllItems();
+        if (n_algorismes > 0) {
+            ArrayList<Algorisme> algorismes = new ArrayList<>();
+            JsonObject jsonAlgorismes = jsonValue.getJsonObject(ALGORISMES_PARAM);
+            if (n_algorismes == 1) {
+                JsonObject algorisme_json = jsonAlgorismes.getJsonObject(ALGORISME_PARAM);
+                String id = algorisme_json.getString(Algorisme.ID_PARAM);
+                String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
+                String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
+                String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
+                Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
+                algorismes.add(algorisme);
+            } else {
+                JsonArray jsonArrayAlgorismes = jsonAlgorismes.getJsonArray(ALGORISME_PARAM);
+                for (int i = 0; i < jsonArrayAlgorismes.size(); i++) {
+                    JsonObject algorisme_json = jsonArrayAlgorismes.getJsonObject(i);
+                    String id = algorisme_json.getString(Algorisme.ID_PARAM);
+                    String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
+                    String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
+                    String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
+                    Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
+                    algorismes.add(algorisme);
+                }
+            }
+            Algorisme[] array_algorismes = new Algorisme[algorismes.size()];
+            algorismes.toArray(array_algorismes);
+            DefaultComboBoxModel cm = new DefaultComboBoxModel(array_algorismes);
+            this.jcbAlgorismes.setModel(cm);
+        } else {
+            JOptionPane.showMessageDialog(jpApplet, "No hi han algorismes");
         }
 
-        Algorisme[] array_algorismes = new Algorisme[jsonArrayAlgorismes.size()];
-        algorismes.toArray(array_algorismes);
-        DefaultComboBoxModel cm = new DefaultComboBoxModel(array_algorismes);
-        this.jcbAlgorismes.removeAllItems();
-        this.jcbAlgorismes.setModel(cm);
     }
 
     /**
