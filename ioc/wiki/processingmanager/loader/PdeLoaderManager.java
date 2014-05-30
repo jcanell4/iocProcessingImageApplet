@@ -71,8 +71,8 @@ public class PdeLoaderManager {
         URLClassLoader urlClassLoader = new URLClassLoader(array_urls);
         try {
             cl = (Class<? extends ImageGenerator>) urlClassLoader.loadClass(className);
-            urlClassLoader.close();
-        } catch (ClassNotFoundException | IOException ex) {
+            //urlClassLoader.close();
+        } catch (ClassNotFoundException /*| IOException*/ ex) {
             throw new ProcessingLoaderException(ex);
         }
         return cl;

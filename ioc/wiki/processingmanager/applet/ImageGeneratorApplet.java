@@ -120,7 +120,8 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 }
             });
         } catch (Exception ex) {
-            ex.printStackTrace();
+//            ex.printStackTrace();
+java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);            
         }
     }
 
@@ -191,6 +192,8 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         } catch (ProcessingLoaderException ex) {
             //MOSTRAR L'ERROR EN L'APPLET.
             JOptionPane.showMessageDialog(jpApplet, DataManager.getData(ERROR_GENERAR_IMATGE));
+//            ex.printStackTrace();
+            java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
 
@@ -211,6 +214,8 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
             } catch (ProcessingImageException ex) {
                 image = null;
                 JOptionPane.showMessageDialog(jpApplet, DataManager.getData(ERROR_DESAR_IMATGE));
+//                ex.printStackTrace();
+                java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
             if (image != null) {
                 //Envia la imatge al servidor
