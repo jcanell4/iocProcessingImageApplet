@@ -167,12 +167,12 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
                 this.pdeApplet = tmp;
                 throw new ProcessingLoaderException(ex);
             }
+            tmp.dispose();
 
         } else {//Encara no haviem generat cap imatge
             this.pdeApplet = generator;
             this.jpApplet.add(this.pdeApplet);
         }
-
     }
 
     /**
@@ -183,11 +183,8 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
         try {
             Algorisme algorisme = (Algorisme) jcbAlgorismes.getSelectedItem();
             String className = algorisme.getClasse();
-            //Si ja esta aquest algorisme carregat, no faria falta generar una nova instancia.
-            if (this.pdeApplet == null || !this.pdeApplet.getClass().getName().equals(className)) {
-                ImageGenerator imageGenerator = pdeLoaderManager.getNewInstance(className);
-                setImageGenerator(imageGenerator);
-            }
+            ImageGenerator imageGenerator = pdeLoaderManager.getNewInstance(className);
+            setImageGenerator(imageGenerator);
             setSeed(this.jtfLlavor.getText());
             this.pdeApplet.init();
         } catch (ProcessingLoaderException ex) {
@@ -274,7 +271,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
         form.add(jlError);
         jlError.setForeground(Color.red);
         int result = JOptionPane.showConfirmDialog(
-                jpApplet, form, SAVE_IMAGE_LABEL,
+                this, form, SAVE_IMAGE_LABEL,
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE);
         String nom = jtfNom.getText();
@@ -285,7 +282,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
         while (result == JOptionPane.OK_OPTION & nom.isEmpty()) {
             jlError.setText(DataManager.getData(ERROR_CAMP_BUIT));
             result = JOptionPane.showConfirmDialog(
-                    jpApplet, form, SAVE_IMAGE_LABEL,
+                    this, form, SAVE_IMAGE_LABEL,
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE);
             nom = jtfNom.getText();
@@ -342,34 +339,45 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
         if (n_algorismes > 0) {
             ArrayList<Algorisme> algorismes = new ArrayList<>();
             JsonObject jsonAlgorismes = jsonValue.getJsonObject(ALGORISMES_PARAM);
+            
             if (n_algorismes == 1) {
                 JsonObject algorisme_json = jsonAlgorismes.getJsonObject(ALGORISME_PARAM);
-                String id = algorisme_json.getString(Algorisme.ID_PARAM);
-                String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
-                String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
-                String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
-                Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
-                algorismes.add(algorisme);
+                addItemFromJson(algorisme_json);
+//                String id = algorisme_json.getString(Algorisme.ID_PARAM);
+//                String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
+//                String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
+//                String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
+//                Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
+//                algorismes.add(algorisme);
             } else {
                 JsonArray jsonArrayAlgorismes = jsonAlgorismes.getJsonArray(ALGORISME_PARAM);
                 for (int i = 0; i < jsonArrayAlgorismes.size(); i++) {
                     JsonObject algorisme_json = jsonArrayAlgorismes.getJsonObject(i);
-                    String id = algorisme_json.getString(Algorisme.ID_PARAM);
-                    String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
-                    String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
-                    String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
-                    Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
-                    algorismes.add(algorisme);
+                    addItemFromJson(algorisme_json);
+//                    String id = algorisme_json.getString(Algorisme.ID_PARAM);
+//                    String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
+//                    String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
+//                    String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
+//                    Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
+//                    algorismes.add(algorisme);
                 }
             }
-            Algorisme[] array_algorismes = new Algorisme[algorismes.size()];
-            algorismes.toArray(array_algorismes);
-            DefaultComboBoxModel cm = new DefaultComboBoxModel(array_algorismes);
-            this.jcbAlgorismes.setModel(cm);
+//            Algorisme[] array_algorismes = new Algorisme[algorismes.size()];
+//            algorismes.toArray(array_algorismes);
+//            DefaultComboBoxModel cm = new DefaultComboBoxModel(array_algorismes);
+//            this.jcbAlgorismes.setModel(cm);
         } else {
             JOptionPane.showMessageDialog(jpApplet, "No hi han algorismes");
         }
-
+    }
+    
+    private void addItemFromJson(JsonObject algorisme_json){
+        String id = algorisme_json.getString(Algorisme.ID_PARAM);
+        String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
+        String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
+        String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
+        Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
+        jcbAlgorismes.addItem(algorisme);
     }
 
     /**
@@ -466,7 +474,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
             jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpImageButtonsLayout.createSequentialGroup()
                 .addComponent(jlImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                 .addGroup(jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbGenerar)
                     .addComponent(jbDesar))
@@ -507,7 +515,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
             jpLlavorButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpLlavorButtonsLayout.createSequentialGroup()
                 .addComponent(jlLlavor, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 37, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
                 .addGroup(jpLlavorButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jtfLlavor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jbBuidarLlavor))
@@ -520,6 +528,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
         jlAlgorismes.setText("Algorismes");
 
         jcbAlgorismes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcbAlgorismes.setToolTipText("Llista d'algoritmes a  seleccionar");
         jcbAlgorismes.addItemListener(new java.awt.event.ItemListener() {
             public void itemStateChanged(java.awt.event.ItemEvent evt) {
                 jcbAlgorismesItemStateChanged(evt);
@@ -558,7 +567,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
                 .addGap(30, 30, 30)
                 .addComponent(jlDescripcio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jspDescripcio, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE))
+                .addComponent(jspDescripcio, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout jpButtonsLayout = new javax.swing.GroupLayout(jpButtons);
@@ -575,10 +584,10 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
         jpButtonsLayout.setVerticalGroup(
             jpButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jpButtonsLayout.createSequentialGroup()
-                .addComponent(jpAlgorismesButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 198, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(jpAlgorismesButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jpLlavorButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 17, Short.MAX_VALUE)
+                .addGap(17, 17, 17)
                 .addComponent(jpImageButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
