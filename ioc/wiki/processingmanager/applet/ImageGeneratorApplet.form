@@ -261,6 +261,10 @@
           <SubComponents>
             <Component class="javax.swing.JLabel" name="jlAlgorismes">
               <Properties>
+                <Property name="displayedMnemonic" type="int" value="65"/>
+                <Property name="labelFor" type="java.awt.Component" editor="org.netbeans.modules.form.ComponentChooserEditor">
+                  <ComponentRef name="jcbAlgorismes"/>
+                </Property>
                 <Property name="text" type="java.lang.String" value="Algorismes"/>
               </Properties>
             </Component>
@@ -288,6 +292,13 @@
               <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
               <SubComponents>
                 <Component class="javax.swing.JTextArea" name="jtaDescripcio">
+                  <Properties>
+                    <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
+                      <Color blue="f2" green="f4" red="f6" type="rgb"/>
+                    </Property>
+                    <Property name="enabled" type="boolean" value="false"/>
+                    <Property name="focusable" type="boolean" value="false"/>
+                  </Properties>
                 </Component>
               </SubComponents>
             </Container>

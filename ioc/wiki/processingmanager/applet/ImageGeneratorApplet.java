@@ -525,6 +525,8 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
         jpAlgorismesButtons.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jpAlgorismesButtons.setPreferredSize(new java.awt.Dimension(172, 70));
 
+        jlAlgorismes.setDisplayedMnemonic('A');
+        jlAlgorismes.setLabelFor(jcbAlgorismes);
         jlAlgorismes.setText("Algorismes");
 
         jcbAlgorismes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
@@ -535,6 +537,9 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
             }
         });
 
+        jtaDescripcio.setDisabledTextColor(new java.awt.Color(246, 244, 242));
+        jtaDescripcio.setEnabled(false);
+        jtaDescripcio.setFocusable(false);
         jspDescripcio.setViewportView(jtaDescripcio);
 
         jlDescripcio.setText("Descripció");
