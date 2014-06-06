@@ -17,45 +17,35 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jpApplet" max="32767" attributes="0"/>
-              <EmptySpace min="-2" max="-2" attributes="0"/>
+              <Component id="jScrollImage" pref="532" max="32767" attributes="0"/>
+              <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jpButtons" min="-2" max="-2" attributes="0"/>
           </Group>
       </Group>
     </DimensionLayout>
     <DimensionLayout dim="1">
       <Group type="103" groupAlignment="0" attributes="0">
-          <Component id="jpButtons" max="32767" attributes="0"/>
-          <Component id="jpApplet" alignment="0" max="32767" attributes="0"/>
+          <Component id="jpButtons" pref="467" max="32767" attributes="0"/>
+          <Component id="jScrollImage" max="32767" attributes="0"/>
       </Group>
     </DimensionLayout>
   </Layout>
   <SubComponents>
-    <Container class="javax.swing.JPanel" name="jpApplet">
-
-      <Layout>
-        <DimensionLayout dim="0">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="510" max="32767" attributes="0"/>
-          </Group>
-        </DimensionLayout>
-        <DimensionLayout dim="1">
-          <Group type="103" groupAlignment="0" attributes="0">
-              <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-          </Group>
-        </DimensionLayout>
-      </Layout>
-    </Container>
     <Container class="javax.swing.JPanel" name="jpButtons">
+      <Properties>
+        <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+          <Dimension value="[290, 459]"/>
+        </Property>
+      </Properties>
 
       <Layout>
         <DimensionLayout dim="0">
           <Group type="103" groupAlignment="0" attributes="0">
               <Group type="102" attributes="0">
                   <Group type="103" groupAlignment="0" attributes="0">
-                      <Component id="jpAlgorismesButtons" pref="280" max="32767" attributes="0"/>
-                      <Component id="jpLlavorButtons" pref="280" max="32767" attributes="0"/>
-                      <Component id="jpImageButtons" pref="280" max="32767" attributes="0"/>
+                      <Component id="jpAlgorismesButtons" pref="278" max="32767" attributes="0"/>
+                      <Component id="jpLlavorButtons" pref="278" max="32767" attributes="0"/>
+                      <Component id="jpImageButtons" pref="278" max="32767" attributes="0"/>
                   </Group>
                   <EmptySpace min="-2" max="-2" attributes="0"/>
               </Group>
@@ -64,7 +54,7 @@
         <DimensionLayout dim="1">
           <Group type="103" groupAlignment="1" attributes="0">
               <Group type="102" alignment="1" attributes="0">
-                  <Component id="jpAlgorismesButtons" pref="198" max="32767" attributes="0"/>
+                  <Component id="jpAlgorismesButtons" pref="206" max="32767" attributes="0"/>
                   <EmptySpace type="unrelated" min="-2" max="-2" attributes="0"/>
                   <Component id="jpLlavorButtons" min="-2" pref="110" max="-2" attributes="0"/>
                   <EmptySpace min="-2" pref="17" max="-2" attributes="0"/>
@@ -75,139 +65,6 @@
         </DimensionLayout>
       </Layout>
       <SubComponents>
-        <Container class="javax.swing.JPanel" name="jpImageButtons">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
-                <BevelBorder/>
-              </Border>
-            </Property>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[172, 70]"/>
-            </Property>
-          </Properties>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="0" attributes="0">
-                      <Component id="jbGenerar" pref="129" max="32767" attributes="0"/>
-                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
-                      <Component id="jbDesar" min="-2" pref="121" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="0" attributes="0">
-                      <EmptySpace min="-2" pref="100" max="-2" attributes="0"/>
-                      <Component id="jlImatge" min="-2" pref="55" max="-2" attributes="0"/>
-                      <EmptySpace max="32767" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="jlImatge" min="-2" pref="26" max="-2" attributes="0"/>
-                      <EmptySpace pref="38" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jbGenerar" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jbDesar" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JButton" name="jbGenerar">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Generar"/>
-                <Property name="toolTipText" type="java.lang.String" value="Genera la imatge"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jbGenerarMouseClicked"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JButton" name="jbDesar">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Desar"/>
-                <Property name="toolTipText" type="java.lang.String" value="Desa la imatge"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jbDesarMouseClicked"/>
-              </Events>
-            </Component>
-            <Component class="javax.swing.JLabel" name="jlImatge">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Imatge"/>
-              </Properties>
-            </Component>
-          </SubComponents>
-        </Container>
-        <Container class="javax.swing.JPanel" name="jpLlavorButtons">
-          <Properties>
-            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
-              <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
-                <BevelBorder/>
-              </Border>
-            </Property>
-            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
-              <Dimension value="[172, 70]"/>
-            </Property>
-          </Properties>
-
-          <Layout>
-            <DimensionLayout dim="0">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" attributes="0">
-                      <Component id="jtfLlavor" max="32767" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                      <Component id="jbBuidarLlavor" min="-2" max="-2" attributes="0"/>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-                  <Group type="102" alignment="1" attributes="0">
-                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
-                      <Component id="jlLlavor" min="-2" pref="55" max="-2" attributes="0"/>
-                      <EmptySpace min="-2" pref="100" max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-            <DimensionLayout dim="1">
-              <Group type="103" groupAlignment="0" attributes="0">
-                  <Group type="102" alignment="1" attributes="0">
-                      <Component id="jlLlavor" min="-2" pref="26" max="-2" attributes="0"/>
-                      <EmptySpace pref="38" max="32767" attributes="0"/>
-                      <Group type="103" groupAlignment="3" attributes="0">
-                          <Component id="jtfLlavor" alignment="3" min="-2" max="-2" attributes="0"/>
-                          <Component id="jbBuidarLlavor" alignment="3" min="-2" max="-2" attributes="0"/>
-                      </Group>
-                      <EmptySpace max="-2" attributes="0"/>
-                  </Group>
-              </Group>
-            </DimensionLayout>
-          </Layout>
-          <SubComponents>
-            <Component class="javax.swing.JLabel" name="jlLlavor">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Llavor"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JTextField" name="jtfLlavor">
-              <Properties>
-                <Property name="columns" type="int" value="7"/>
-                <Property name="toolTipText" type="java.lang.String" value="Introdueix una llavor"/>
-              </Properties>
-            </Component>
-            <Component class="javax.swing.JButton" name="jbBuidarLlavor">
-              <Properties>
-                <Property name="text" type="java.lang.String" value="Buidar"/>
-                <Property name="toolTipText" type="java.lang.String" value="Buida la llavor"/>
-              </Properties>
-              <Events>
-                <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="jbBuidarLlavorMouseClicked"/>
-              </Events>
-            </Component>
-          </SubComponents>
-        </Container>
         <Container class="javax.swing.JPanel" name="jpAlgorismesButtons">
           <Properties>
             <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
@@ -253,7 +110,7 @@
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                       <Component id="jlDescripcio" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jspDescripcio" pref="89" max="32767" attributes="0"/>
+                      <Component id="jspDescripcio" pref="97" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>
@@ -281,8 +138,13 @@
                 <Property name="toolTipText" type="java.lang.String" value="Llista d&apos;algoritmes a  seleccionar"/>
               </Properties>
               <Events>
-                <EventHandler event="itemStateChanged" listener="java.awt.event.ItemListener" parameters="java.awt.event.ItemEvent" handler="jcbAlgorismesItemStateChanged"/>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jcbAlgorismesActionPerformed"/>
               </Events>
+            </Component>
+            <Component class="javax.swing.JLabel" name="jlDescripcio">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Descripci&#xf3;"/>
+              </Properties>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jspDescripcio">
               <AuxValues>
@@ -293,8 +155,10 @@
               <SubComponents>
                 <Component class="javax.swing.JTextArea" name="jtaDescripcio">
                   <Properties>
+                    <Property name="editable" type="boolean" value="false"/>
+                    <Property name="lineWrap" type="boolean" value="true"/>
                     <Property name="disabledTextColor" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                      <Color blue="f2" green="f4" red="f6" type="rgb"/>
+                      <Color blue="c" green="f" red="13" type="rgb"/>
                     </Property>
                     <Property name="enabled" type="boolean" value="false"/>
                     <Property name="focusable" type="boolean" value="false"/>
@@ -302,12 +166,166 @@
                 </Component>
               </SubComponents>
             </Container>
-            <Component class="javax.swing.JLabel" name="jlDescripcio">
+          </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="jpLlavorButtons">
+          <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
+                <BevelBorder/>
+              </Border>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[172, 70]"/>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jtfLlavor" max="32767" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jbBuidarLlavor" min="-2" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="1" attributes="0">
+                      <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                      <Component id="jlLlavor" min="-2" pref="55" max="-2" attributes="0"/>
+                      <EmptySpace min="-2" pref="100" max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="jlLlavor" min="-2" pref="26" max="-2" attributes="0"/>
+                      <EmptySpace pref="38" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jtfLlavor" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jbBuidarLlavor" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="jlLlavor">
               <Properties>
-                <Property name="text" type="java.lang.String" value="Descripci&#xf3;"/>
+                <Property name="text" type="java.lang.String" value="Llavor"/>
               </Properties>
             </Component>
+            <Component class="javax.swing.JTextField" name="jtfLlavor">
+              <Properties>
+                <Property name="columns" type="int" value="7"/>
+                <Property name="toolTipText" type="java.lang.String" value="Introdueix una llavor"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="jbBuidarLlavor">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Buidar"/>
+                <Property name="toolTipText" type="java.lang.String" value="Buida la llavor"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbBuidarLlavorActionPerformed"/>
+              </Events>
+            </Component>
           </SubComponents>
+        </Container>
+        <Container class="javax.swing.JPanel" name="jpImageButtons">
+          <Properties>
+            <Property name="border" type="javax.swing.border.Border" editor="org.netbeans.modules.form.editors2.BorderEditor">
+              <Border info="org.netbeans.modules.form.compat2.border.SoftBevelBorderInfo">
+                <BevelBorder/>
+              </Border>
+            </Property>
+            <Property name="preferredSize" type="java.awt.Dimension" editor="org.netbeans.beaninfo.editors.DimensionEditor">
+              <Dimension value="[172, 70]"/>
+            </Property>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace max="-2" attributes="0"/>
+                      <Component id="jbGenerar" max="32767" attributes="0"/>
+                      <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                      <Component id="jbDesar" min="-2" pref="121" max="-2" attributes="0"/>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+                  <Group type="102" alignment="0" attributes="0">
+                      <EmptySpace min="-2" pref="100" max="-2" attributes="0"/>
+                      <Component id="jlImatge" min="-2" pref="55" max="-2" attributes="0"/>
+                      <EmptySpace max="32767" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <Group type="102" alignment="1" attributes="0">
+                      <Component id="jlImatge" min="-2" pref="26" max="-2" attributes="0"/>
+                      <EmptySpace pref="38" max="32767" attributes="0"/>
+                      <Group type="103" groupAlignment="3" attributes="0">
+                          <Component id="jbGenerar" alignment="3" min="-2" max="-2" attributes="0"/>
+                          <Component id="jbDesar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      </Group>
+                      <EmptySpace max="-2" attributes="0"/>
+                  </Group>
+              </Group>
+            </DimensionLayout>
+          </Layout>
+          <SubComponents>
+            <Component class="javax.swing.JLabel" name="jlImatge">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Imatge"/>
+              </Properties>
+            </Component>
+            <Component class="javax.swing.JButton" name="jbGenerar">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Generar"/>
+                <Property name="toolTipText" type="java.lang.String" value="Genera la imatge"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbGenerarActionPerformed"/>
+              </Events>
+            </Component>
+            <Component class="javax.swing.JButton" name="jbDesar">
+              <Properties>
+                <Property name="text" type="java.lang.String" value="Desar"/>
+                <Property name="toolTipText" type="java.lang.String" value="Desa la imatge"/>
+              </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jbDesarActionPerformed"/>
+              </Events>
+            </Component>
+          </SubComponents>
+        </Container>
+      </SubComponents>
+    </Container>
+    <Container class="javax.swing.JScrollPane" name="jScrollImage">
+
+      <Layout class="org.netbeans.modules.form.compat2.layouts.support.JScrollPaneSupportLayout"/>
+      <SubComponents>
+        <Container class="javax.swing.JPanel" name="jpApplet">
+          <Properties>
+            <Property name="focusable" type="boolean" value="false"/>
+          </Properties>
+
+          <Layout>
+            <DimensionLayout dim="0">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="530" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+            <DimensionLayout dim="1">
+              <Group type="103" groupAlignment="0" attributes="0">
+                  <EmptySpace min="0" pref="465" max="32767" attributes="0"/>
+              </Group>
+            </DimensionLayout>
+          </Layout>
         </Container>
       </SubComponents>
     </Container>

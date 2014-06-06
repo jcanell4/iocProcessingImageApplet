@@ -95,7 +95,8 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
             java.awt.EventQueue.invokeAndWait(new Runnable() {
                 public void run() {
                     initComponents();
-
+                    
+                    getRootPane().setDefaultButton(jbGenerar);
                     //PDE LOAD MANAGER
                     pdeLoaderManager = new PdeLoaderManager();
                     //urls de les llibreries i classes a carregar
@@ -117,12 +118,16 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                     fileSender.setCookies(getParameter(COOKIES_PARAM));
                     fileSender.setParameter(SECTOK_PARAM, getParameter(SECTOK_PARAM));
                     fileSender.setUrl(getParameter(FILE_SENDER_URL_PARAM));
+                    
+                    jcbAlgorismes.requestFocusInWindow();
 
                 }
             });
+            
         } catch (Exception ex) {
 //            ex.printStackTrace();
-java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);            
+            java.util.logging.Logger.getLogger("ImageGeneratorApplet")
+                                .log(java.util.logging.Level.SEVERE, null, ex);            
         }
     }
 
@@ -151,7 +156,8 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
      * @throws ProcessingLoaderException es llença quan no s'ha pogut afegir el
      * nou ImageGenerator.
      */
-    private void setImageGenerator(ImageGenerator generator) throws ProcessingLoaderException {
+    private void setImageGenerator(ImageGenerator generator) 
+                                        throws ProcessingLoaderException {
         //Ja teniem una instancia
         if (this.pdeApplet != null) {
             if (this.pdeApplet.isActive()) {//Aturarla
@@ -160,9 +166,11 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
             //Temporal de la que ja estaba per si trobem algun problema.
             ImageGenerator tmp = this.pdeApplet;
             try {
+//                this.jpApplet.remove(this.pdeApplet);
                 this.jpApplet.remove(this.pdeApplet);
                 this.pdeApplet = generator;
                 this.jpApplet.add(this.pdeApplet);
+//                this.jpApplet.add(this.pdeApplet);
             } catch (Exception ex) {
                 this.pdeApplet = tmp;
                 throw new ProcessingLoaderException(ex);
@@ -172,7 +180,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
         } else {//Encara no haviem generat cap imatge
             this.pdeApplet = generator;
             this.jpApplet.add(this.pdeApplet);
-        }
+        }        
     }
 
     /**
@@ -187,9 +195,10 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
             setImageGenerator(imageGenerator);
             setSeed(this.jtfLlavor.getText());
             this.pdeApplet.init();
+            this.jpApplet.setSize(pdeApplet.getHeight(), pdeApplet.getWidth());
         } catch (ProcessingLoaderException ex) {
             //MOSTRAR L'ERROR EN L'APPLET.
-            JOptionPane.showMessageDialog(jpApplet, DataManager.getData(ERROR_GENERAR_IMATGE));
+            JOptionPane.showMessageDialog(this, DataManager.getData(ERROR_GENERAR_IMATGE));
 //            ex.printStackTrace();
             java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -211,7 +220,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
                 image = saveLocalImage(imageName);
             } catch (ProcessingImageException ex) {
                 image = null;
-                JOptionPane.showMessageDialog(jpApplet, DataManager.getData(ERROR_DESAR_IMATGE));
+                JOptionPane.showMessageDialog(this, DataManager.getData(ERROR_DESAR_IMATGE));
 //                ex.printStackTrace();
                 java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
@@ -224,7 +233,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
                 JsonObject value = json.getJsonObject(VALUE_PARAM);
                 String code = value.getString(CODE_PARAM);
                 String info = value.getString(INFO_PARAM);
-                JOptionPane.showMessageDialog(jpApplet, info);
+                JOptionPane.showMessageDialog(this, info);
             }
         }
     }
@@ -236,7 +245,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
      * @return true si el nom de la imatge ja existeix en el servidor, altrament
      * false.
      */
-    private boolean existsImage(String imageName) {
+    protected boolean existsImage(String imageName) {
         boolean exists = false;
         HttpCommandSender nameSender = new HttpCommandSender();
         nameSender.setCookies(getParameter(COOKIES_PARAM));
@@ -261,7 +270,7 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
      * @return Retorna el nom de la imatge, amb extensió .png, introduït per
      * l'usuari.
      */
-    private String preguntarNomImatge(String error) {
+    protected String preguntarNomImatge(String error) {
         JPanel form = new JPanel(new GridLayout(0, 1));
         JLabel jlNom = new JLabel(IMAGE_NAME_LABEL);
         JTextField jtfNom = new JTextField(7);
@@ -343,31 +352,15 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
             if (n_algorismes == 1) {
                 JsonObject algorisme_json = jsonAlgorismes.getJsonObject(ALGORISME_PARAM);
                 addItemFromJson(algorisme_json);
-//                String id = algorisme_json.getString(Algorisme.ID_PARAM);
-//                String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
-//                String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
-//                String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
-//                Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
-//                algorismes.add(algorisme);
             } else {
                 JsonArray jsonArrayAlgorismes = jsonAlgorismes.getJsonArray(ALGORISME_PARAM);
                 for (int i = 0; i < jsonArrayAlgorismes.size(); i++) {
                     JsonObject algorisme_json = jsonArrayAlgorismes.getJsonObject(i);
                     addItemFromJson(algorisme_json);
-//                    String id = algorisme_json.getString(Algorisme.ID_PARAM);
-//                    String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
-//                    String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
-//                    String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
-//                    Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
-//                    algorismes.add(algorisme);
                 }
             }
-//            Algorisme[] array_algorismes = new Algorisme[algorismes.size()];
-//            algorismes.toArray(array_algorismes);
-//            DefaultComboBoxModel cm = new DefaultComboBoxModel(array_algorismes);
-//            this.jcbAlgorismes.setModel(cm);
         } else {
-            JOptionPane.showMessageDialog(jpApplet, "No hi han algorismes");
+            JOptionPane.showMessageDialog(this, "No hi han algorismes");
         }
     }
     
@@ -407,120 +400,25 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jpApplet = new javax.swing.JPanel();
         jpButtons = new javax.swing.JPanel();
-        jpImageButtons = new javax.swing.JPanel();
-        jbGenerar = new javax.swing.JButton();
-        jbDesar = new javax.swing.JButton();
-        jlImatge = new javax.swing.JLabel();
+        jpAlgorismesButtons = new javax.swing.JPanel();
+        jlAlgorismes = new javax.swing.JLabel();
+        jcbAlgorismes = new javax.swing.JComboBox();
+        jlDescripcio = new javax.swing.JLabel();
+        jspDescripcio = new javax.swing.JScrollPane();
+        jtaDescripcio = new javax.swing.JTextArea();
         jpLlavorButtons = new javax.swing.JPanel();
         jlLlavor = new javax.swing.JLabel();
         jtfLlavor = new javax.swing.JTextField();
         jbBuidarLlavor = new javax.swing.JButton();
-        jpAlgorismesButtons = new javax.swing.JPanel();
-        jlAlgorismes = new javax.swing.JLabel();
-        jcbAlgorismes = new javax.swing.JComboBox();
-        jspDescripcio = new javax.swing.JScrollPane();
-        jtaDescripcio = new javax.swing.JTextArea();
-        jlDescripcio = new javax.swing.JLabel();
+        jpImageButtons = new javax.swing.JPanel();
+        jlImatge = new javax.swing.JLabel();
+        jbGenerar = new javax.swing.JButton();
+        jbDesar = new javax.swing.JButton();
+        jScrollImage = new javax.swing.JScrollPane();
+        jpApplet = new javax.swing.JPanel();
 
-        javax.swing.GroupLayout jpAppletLayout = new javax.swing.GroupLayout(jpApplet);
-        jpApplet.setLayout(jpAppletLayout);
-        jpAppletLayout.setHorizontalGroup(
-            jpAppletLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 510, Short.MAX_VALUE)
-        );
-        jpAppletLayout.setVerticalGroup(
-            jpAppletLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
-
-        jpImageButtons.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jpImageButtons.setPreferredSize(new java.awt.Dimension(172, 70));
-
-        jbGenerar.setText("Generar");
-        jbGenerar.setToolTipText("Genera la imatge");
-        jbGenerar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jbGenerarMouseClicked(evt);
-            }
-        });
-
-        jbDesar.setText("Desar");
-        jbDesar.setToolTipText("Desa la imatge");
-        jbDesar.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jbDesarMouseClicked(evt);
-            }
-        });
-
-        jlImatge.setText("Imatge");
-
-        javax.swing.GroupLayout jpImageButtonsLayout = new javax.swing.GroupLayout(jpImageButtons);
-        jpImageButtons.setLayout(jpImageButtonsLayout);
-        jpImageButtonsLayout.setHorizontalGroup(
-            jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpImageButtonsLayout.createSequentialGroup()
-                .addComponent(jbGenerar, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jbDesar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
-            .addGroup(jpImageButtonsLayout.createSequentialGroup()
-                .addGap(100, 100, 100)
-                .addComponent(jlImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-        );
-        jpImageButtonsLayout.setVerticalGroup(
-            jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpImageButtonsLayout.createSequentialGroup()
-                .addComponent(jlImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-                .addGroup(jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jbGenerar)
-                    .addComponent(jbDesar))
-                .addContainerGap())
-        );
-
-        jpLlavorButtons.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
-        jpLlavorButtons.setPreferredSize(new java.awt.Dimension(172, 70));
-
-        jlLlavor.setText("Llavor");
-
-        jtfLlavor.setColumns(7);
-        jtfLlavor.setToolTipText("Introdueix una llavor");
-
-        jbBuidarLlavor.setText("Buidar");
-        jbBuidarLlavor.setToolTipText("Buida la llavor");
-        jbBuidarLlavor.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jbBuidarLlavorMouseClicked(evt);
-            }
-        });
-
-        javax.swing.GroupLayout jpLlavorButtonsLayout = new javax.swing.GroupLayout(jpLlavorButtons);
-        jpLlavorButtons.setLayout(jpLlavorButtonsLayout);
-        jpLlavorButtonsLayout.setHorizontalGroup(
-            jpLlavorButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jpLlavorButtonsLayout.createSequentialGroup()
-                .addComponent(jtfLlavor)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jbBuidarLlavor)
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpLlavorButtonsLayout.createSequentialGroup()
-                .addGap(0, 0, Short.MAX_VALUE)
-                .addComponent(jlLlavor, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(100, 100, 100))
-        );
-        jpLlavorButtonsLayout.setVerticalGroup(
-            jpLlavorButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpLlavorButtonsLayout.createSequentialGroup()
-                .addComponent(jlLlavor, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
-                .addGroup(jpLlavorButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jtfLlavor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jbBuidarLlavor))
-                .addContainerGap())
-        );
+        jpButtons.setPreferredSize(new java.awt.Dimension(290, 459));
 
         jpAlgorismesButtons.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
         jpAlgorismesButtons.setPreferredSize(new java.awt.Dimension(172, 70));
@@ -531,18 +429,20 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
 
         jcbAlgorismes.setModel(new javax.swing.DefaultComboBoxModel(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         jcbAlgorismes.setToolTipText("Llista d'algoritmes a  seleccionar");
-        jcbAlgorismes.addItemListener(new java.awt.event.ItemListener() {
-            public void itemStateChanged(java.awt.event.ItemEvent evt) {
-                jcbAlgorismesItemStateChanged(evt);
+        jcbAlgorismes.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcbAlgorismesActionPerformed(evt);
             }
         });
 
-        jtaDescripcio.setDisabledTextColor(new java.awt.Color(246, 244, 242));
+        jlDescripcio.setText("Descripció");
+
+        jtaDescripcio.setEditable(false);
+        jtaDescripcio.setLineWrap(true);
+        jtaDescripcio.setDisabledTextColor(new java.awt.Color(19, 15, 12));
         jtaDescripcio.setEnabled(false);
         jtaDescripcio.setFocusable(false);
         jspDescripcio.setViewportView(jtaDescripcio);
-
-        jlDescripcio.setText("Descripció");
 
         javax.swing.GroupLayout jpAlgorismesButtonsLayout = new javax.swing.GroupLayout(jpAlgorismesButtons);
         jpAlgorismesButtons.setLayout(jpAlgorismesButtonsLayout);
@@ -572,7 +472,96 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
                 .addGap(30, 30, 30)
                 .addComponent(jlDescripcio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jspDescripcio, javax.swing.GroupLayout.DEFAULT_SIZE, 89, Short.MAX_VALUE))
+                .addComponent(jspDescripcio, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+        );
+
+        jpLlavorButtons.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jpLlavorButtons.setPreferredSize(new java.awt.Dimension(172, 70));
+
+        jlLlavor.setText("Llavor");
+
+        jtfLlavor.setColumns(7);
+        jtfLlavor.setToolTipText("Introdueix una llavor");
+
+        jbBuidarLlavor.setText("Buidar");
+        jbBuidarLlavor.setToolTipText("Buida la llavor");
+        jbBuidarLlavor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbBuidarLlavorActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jpLlavorButtonsLayout = new javax.swing.GroupLayout(jpLlavorButtons);
+        jpLlavorButtons.setLayout(jpLlavorButtonsLayout);
+        jpLlavorButtonsLayout.setHorizontalGroup(
+            jpLlavorButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpLlavorButtonsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jtfLlavor)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jbBuidarLlavor)
+                .addContainerGap())
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpLlavorButtonsLayout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jlLlavor, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(100, 100, 100))
+        );
+        jpLlavorButtonsLayout.setVerticalGroup(
+            jpLlavorButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpLlavorButtonsLayout.createSequentialGroup()
+                .addComponent(jlLlavor, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addGroup(jpLlavorButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jtfLlavor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jbBuidarLlavor))
+                .addContainerGap())
+        );
+
+        jpImageButtons.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        jpImageButtons.setPreferredSize(new java.awt.Dimension(172, 70));
+
+        jlImatge.setText("Imatge");
+
+        jbGenerar.setText("Generar");
+        jbGenerar.setToolTipText("Genera la imatge");
+        jbGenerar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbGenerarActionPerformed(evt);
+            }
+        });
+
+        jbDesar.setText("Desar");
+        jbDesar.setToolTipText("Desa la imatge");
+        jbDesar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbDesarActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jpImageButtonsLayout = new javax.swing.GroupLayout(jpImageButtons);
+        jpImageButtons.setLayout(jpImageButtonsLayout);
+        jpImageButtonsLayout.setHorizontalGroup(
+            jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jpImageButtonsLayout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jbGenerar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jbDesar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap())
+            .addGroup(jpImageButtonsLayout.createSequentialGroup()
+                .addGap(100, 100, 100)
+                .addComponent(jlImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jpImageButtonsLayout.setVerticalGroup(
+            jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jpImageButtonsLayout.createSequentialGroup()
+                .addComponent(jlImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 38, Short.MAX_VALUE)
+                .addGroup(jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jbGenerar)
+                    .addComponent(jbDesar))
+                .addContainerGap())
         );
 
         javax.swing.GroupLayout jpButtonsLayout = new javax.swing.GroupLayout(jpButtons);
@@ -581,15 +570,15 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
             jpButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpButtonsLayout.createSequentialGroup()
                 .addGroup(jpButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jpAlgorismesButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                    .addComponent(jpLlavorButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
-                    .addComponent(jpImageButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE))
+                    .addComponent(jpAlgorismesButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                    .addComponent(jpLlavorButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE)
+                    .addComponent(jpImageButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 278, Short.MAX_VALUE))
                 .addContainerGap())
         );
         jpButtonsLayout.setVerticalGroup(
             jpButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jpButtonsLayout.createSequentialGroup()
-                .addComponent(jpAlgorismesButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 198, Short.MAX_VALUE)
+                .addComponent(jpAlgorismesButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jpLlavorButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17)
@@ -597,40 +586,60 @@ java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(jav
                 .addContainerGap())
         );
 
+        jpApplet.setFocusable(false);
+
+        javax.swing.GroupLayout jpAppletLayout = new javax.swing.GroupLayout(jpApplet);
+        jpApplet.setLayout(jpAppletLayout);
+        jpAppletLayout.setHorizontalGroup(
+            jpAppletLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 530, Short.MAX_VALUE)
+        );
+        jpAppletLayout.setVerticalGroup(
+            jpAppletLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 465, Short.MAX_VALUE)
+        );
+
+        jScrollImage.setViewportView(jpApplet);
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jpApplet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jScrollImage, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jpButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jpButtons, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-            .addComponent(jpApplet, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addComponent(jpButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
+            .addComponent(jScrollImage)
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jbBuidarLlavorMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jbBuidarLlavorMouseClicked
-        buidarLlavor();
-    }//GEN-LAST:event_jbBuidarLlavorMouseClicked
-
-    private void jbGenerarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jbGenerarMouseClicked
+    private void jbGenerarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbGenerarActionPerformed
         generateImage();
-    }//GEN-LAST:event_jbGenerarMouseClicked
+        jtfLlavor.requestFocusInWindow();
+    }//GEN-LAST:event_jbGenerarActionPerformed
 
-    private void jbDesarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jbDesarMouseClicked
-        saveImage();
-    }//GEN-LAST:event_jbDesarMouseClicked
-
-    private void jcbAlgorismesItemStateChanged(java.awt.event.ItemEvent evt) {//GEN-FIRST:event_jcbAlgorismesItemStateChanged
+    private void jcbAlgorismesActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcbAlgorismesActionPerformed
         setDescripcio();
-    }//GEN-LAST:event_jcbAlgorismesItemStateChanged
+        jtfLlavor.requestFocusInWindow();
+    }//GEN-LAST:event_jcbAlgorismesActionPerformed
+
+    private void jbDesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbDesarActionPerformed
+        saveImage();
+        jtfLlavor.requestFocusInWindow();           
+    }//GEN-LAST:event_jbDesarActionPerformed
+
+    private void jbBuidarLlavorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbBuidarLlavorActionPerformed
+        buidarLlavor();
+        jtfLlavor.requestFocusInWindow();
+    }//GEN-LAST:event_jbBuidarLlavorActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JScrollPane jScrollImage;
     private javax.swing.JButton jbBuidarLlavor;
     private javax.swing.JButton jbDesar;
     private javax.swing.JButton jbGenerar;
