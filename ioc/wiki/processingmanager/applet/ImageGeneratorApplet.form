@@ -17,7 +17,7 @@
     <DimensionLayout dim="0">
       <Group type="103" groupAlignment="0" attributes="0">
           <Group type="102" alignment="0" attributes="0">
-              <Component id="jScrollImage" pref="532" max="32767" attributes="0"/>
+              <Component id="jScrollImage" max="32767" attributes="0"/>
               <EmptySpace type="unrelated" max="-2" attributes="0"/>
               <Component id="jpButtons" min="-2" max="-2" attributes="0"/>
           </Group>
@@ -110,7 +110,7 @@
                       <EmptySpace min="-2" pref="30" max="-2" attributes="0"/>
                       <Component id="jlDescripcio" min="-2" max="-2" attributes="0"/>
                       <EmptySpace min="-2" max="-2" attributes="0"/>
-                      <Component id="jspDescripcio" pref="97" max="32767" attributes="0"/>
+                      <Component id="jspDescripcio" max="32767" attributes="0"/>
                   </Group>
               </Group>
             </DimensionLayout>

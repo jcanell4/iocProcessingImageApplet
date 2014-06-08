@@ -21,6 +21,7 @@ public class DataManager {
     public static final String ERROR_CAMP_BUIT = "ERROR_CAMP_BUIT";
     public static final String IMAGE_NAME_LABEL = "NOM_IMATGE_LABEL";
     public static final String SAVE_IMAGE_LABEL = "SAVE_IMAGE_LABEL";
+    public static final String CAP_ALGORISME = "CAP_ALGORISME";
 
     
     private static HashMap<String, String> insertData() {
@@ -32,6 +33,7 @@ public class DataManager {
         result.put(ERROR_CAMP_BUIT, "El camp no pot ser buit");
         result.put(IMAGE_NAME_LABEL, "Nom de la imatge:");
         result.put(SAVE_IMAGE_LABEL, "Desar imatge");
+        result.put(CAP_ALGORISME, "No hi han algorismes");
         
         return result;
     }

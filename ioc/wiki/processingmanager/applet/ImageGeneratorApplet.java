@@ -22,11 +22,13 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.StringReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -56,7 +58,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
 
     private final static String COMMA = ",";
     private final static String IMAGE_EXTENSION = ".png";
-    private final static int NAME_EXISTS_RESPONSE = -2;
+    private final static int NAME_NOT_EXISTS_RESPONSE = 2;
 
     PdeLoaderManager pdeLoaderManager;
     ImageGenerator pdeApplet;
@@ -95,7 +97,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
             java.awt.EventQueue.invokeAndWait(new Runnable() {
                 public void run() {
                     initComponents();
-                    
+
                     getRootPane().setDefaultButton(jbGenerar);
                     //PDE LOAD MANAGER
                     pdeLoaderManager = new PdeLoaderManager();
@@ -118,16 +120,16 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                     fileSender.setCookies(getParameter(COOKIES_PARAM));
                     fileSender.setParameter(SECTOK_PARAM, getParameter(SECTOK_PARAM));
                     fileSender.setUrl(getParameter(FILE_SENDER_URL_PARAM));
-                    
+
                     jcbAlgorismes.requestFocusInWindow();
 
                 }
             });
-            
+
         } catch (Exception ex) {
 //            ex.printStackTrace();
             java.util.logging.Logger.getLogger("ImageGeneratorApplet")
-                                .log(java.util.logging.Level.SEVERE, null, ex);            
+                    .log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
 
@@ -156,8 +158,8 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
      * @throws ProcessingLoaderException es llença quan no s'ha pogut afegir el
      * nou ImageGenerator.
      */
-    private void setImageGenerator(ImageGenerator generator) 
-                                        throws ProcessingLoaderException {
+    private void setImageGenerator(ImageGenerator generator)
+            throws ProcessingLoaderException {
         //Ja teniem una instancia
         if (this.pdeApplet != null) {
             if (this.pdeApplet.isActive()) {//Aturarla
@@ -180,7 +182,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         } else {//Encara no haviem generat cap imatge
             this.pdeApplet = generator;
             this.jpApplet.add(this.pdeApplet);
-        }        
+        }
     }
 
     /**
@@ -211,7 +213,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     public void saveImage() {
         String error = "";
         String imageName = preguntarNomImatge(error);
-        while (!existsImage(imageName) & imageName != null) {
+        while (imageName != null & !existsImage(imageName)) {
             imageName = preguntarNomImatge(DataManager.getData(ERROR_IMATGE_EXISTENT));
         }
         if (imageName != null) {
@@ -226,12 +228,13 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
             }
             if (image != null) {
                 //Envia la imatge al servidor
+                System.out.println(this.fileSender.toString());
                 this.fileSender.setImageToSend(imageName, image);
                 String response = this.fileSender.sendCommand();
                 JsonObject json = (Json.createReader(new StringReader(response)))
                         .readArray().getJsonObject(0);
                 JsonObject value = json.getJsonObject(VALUE_PARAM);
-                String code = value.getString(CODE_PARAM);
+//                String code = value.getString(CODE_PARAM);
                 String info = value.getString(INFO_PARAM);
                 JOptionPane.showMessageDialog(this, info);
             }
@@ -258,7 +261,10 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 .readArray().getJsonObject(0);
         JsonObject value = json.getJsonObject(VALUE_PARAM);
         int code = value.getInt(CODE_PARAM);
-        if (code == NAME_EXISTS_RESPONSE) {
+        String info = value.getString("info");
+        System.out.println("Code: " + code);
+        System.out.println("Info: " + info);
+        if (code == NAME_NOT_EXISTS_RESPONSE) {
             exists = true;
         }
         return exists;
@@ -300,8 +306,10 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         if (result == JOptionPane.CANCEL_OPTION | result == JOptionPane.CLOSED_OPTION) {
             nom = null;
         }
-        if (nom != null & !nom.endsWith(IMAGE_EXTENSION)) {
-            nom += IMAGE_EXTENSION;
+        if (nom != null) {
+            if (!nom.endsWith(IMAGE_EXTENSION)) {
+                nom += IMAGE_EXTENSION;
+            }
         }
         return nom;
     }
@@ -316,14 +324,16 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
      */
     protected byte[] saveLocalImage(String imageName) throws ProcessingImageException {
         byte[] image = null;
+        String path = System.getProperty("java.io.tmpdir")+"/"+imageName;
         try {
             this.pdeApplet.loadPixels();
-            this.pdeApplet.save(imageName);
-            image = this.pdeApplet.loadBytes(imageName);
+            this.pdeApplet.save(path);
+            image = this.pdeApplet.loadBytes(path);
         } catch (Exception ex) {
             throw new ProcessingImageException(ex);
         } finally {
-            File file = new File(imageName);
+            //PER SABER ON ES GUARDA LA IMATGE, NO LA ELIMINO.
+            File file = new File(path);
             file.delete();
         }
         return image;
@@ -348,7 +358,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         if (n_algorismes > 0) {
             ArrayList<Algorisme> algorismes = new ArrayList<>();
             JsonObject jsonAlgorismes = jsonValue.getJsonObject(ALGORISMES_PARAM);
-            
+
             if (n_algorismes == 1) {
                 JsonObject algorisme_json = jsonAlgorismes.getJsonObject(ALGORISME_PARAM);
                 addItemFromJson(algorisme_json);
@@ -360,11 +370,11 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(this, "No hi han algorismes");
+            JOptionPane.showMessageDialog(this, DataManager.getData(DataManager.CAP_ALGORISME));
         }
     }
-    
-    private void addItemFromJson(JsonObject algorisme_json){
+
+    private void addItemFromJson(JsonObject algorisme_json) {
         String id = algorisme_json.getString(Algorisme.ID_PARAM);
         String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
         String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
@@ -629,7 +639,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
 
     private void jbDesarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbDesarActionPerformed
         saveImage();
-        jtfLlavor.requestFocusInWindow();           
+        jtfLlavor.requestFocusInWindow();
     }//GEN-LAST:event_jbDesarActionPerformed
 
     private void jbBuidarLlavorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbBuidarLlavorActionPerformed
