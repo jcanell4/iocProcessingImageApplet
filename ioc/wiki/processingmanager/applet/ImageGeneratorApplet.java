@@ -22,9 +22,6 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.StringReader;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import javax.json.Json;
 import javax.json.JsonArray;
@@ -45,7 +42,6 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     private final static String SECTOK_PARAM = "sectok";
     private final static String FILE_SENDER_URL_PARAM = "fileSenderURL";
     private final static String IMAGE_NAME_PARAM = "imageName";
-//    private final static String FILE_NAME_PARAM = "file";
     private final static String NAME_SENDER_URL_PARAM = "nameSenderURL";
     private final static String PDE_CLASSES_URL_PARAM = "getPdeClassesURL";
     //JSON
@@ -57,8 +53,10 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     private final static String ALGORISME_PARAM = "algorisme";
 
     private final static String COMMA = ",";
+    private final static String SLASH = "/";
     private final static String IMAGE_EXTENSION = ".png";
     private final static int NAME_NOT_EXISTS_RESPONSE = 2;
+    private final static String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
     PdeLoaderManager pdeLoaderManager;
     ImageGenerator pdeApplet;
@@ -234,7 +232,6 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 JsonObject json = (Json.createReader(new StringReader(response)))
                         .readArray().getJsonObject(0);
                 JsonObject value = json.getJsonObject(VALUE_PARAM);
-//                String code = value.getString(CODE_PARAM);
                 String info = value.getString(INFO_PARAM);
                 JOptionPane.showMessageDialog(this, info);
             }
@@ -261,9 +258,6 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 .readArray().getJsonObject(0);
         JsonObject value = json.getJsonObject(VALUE_PARAM);
         int code = value.getInt(CODE_PARAM);
-        String info = value.getString("info");
-        System.out.println("Code: " + code);
-        System.out.println("Info: " + info);
         if (code == NAME_NOT_EXISTS_RESPONSE) {
             exists = true;
         }
@@ -273,6 +267,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     /**
      * Petit formulari per preguntar el nom de la imatge que es vol guardar.
      *
+     * @param error Missatge d'error en un string.
      * @return Retorna el nom de la imatge, amb extensió .png, introduït per
      * l'usuari.
      */
@@ -324,7 +319,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
      */
     protected byte[] saveLocalImage(String imageName) throws ProcessingImageException {
         byte[] image = null;
-        String path = System.getProperty("java.io.tmpdir")+"/"+imageName;
+        String path = System.getProperty(JAVA_IO_TMPDIR)+SLASH+imageName;
         try {
             this.pdeApplet.loadPixels();
             this.pdeApplet.save(path);
@@ -374,6 +369,10 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         }
     }
 
+    /**
+     * Manipula el json per obtenir un Algorisme i afegirlo al desplegable.
+     * @param algorisme_json un objecte json que conte els elements necessaris per construir un objecte Algorisme.
+     */
     private void addItemFromJson(JsonObject algorisme_json) {
         String id = algorisme_json.getString(Algorisme.ID_PARAM);
         String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
