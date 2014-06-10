@@ -374,7 +374,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
      * @param algorisme_json un objecte json que conte els elements necessaris per construir un objecte Algorisme.
      */
     private void addItemFromJson(JsonObject algorisme_json) {
-        String id = algorisme_json.getString(Algorisme.ID_PARAM);
+        String id = algorisme_json.getJsonObject("@attributes").getString(Algorisme.ID_PARAM);
         String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
         String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
         String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
