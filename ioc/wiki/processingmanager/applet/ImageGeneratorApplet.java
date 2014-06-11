@@ -7,12 +7,14 @@ package ioc.wiki.processingmanager.applet;
 
 import ioc.wiki.processingmanager.ImageGenerator;
 import ioc.wiki.processingmanager.data.DataManager;
+import static ioc.wiki.processingmanager.data.DataManager.CAP_ALGORISME;
 import static ioc.wiki.processingmanager.data.DataManager.ERROR_CAMP_BUIT;
 import static ioc.wiki.processingmanager.data.DataManager.ERROR_DESAR_IMATGE;
 import static ioc.wiki.processingmanager.data.DataManager.ERROR_GENERAR_IMATGE;
 import static ioc.wiki.processingmanager.data.DataManager.ERROR_IMATGE_EXISTENT;
 import static ioc.wiki.processingmanager.data.DataManager.IMAGE_NAME_LABEL;
 import static ioc.wiki.processingmanager.data.DataManager.SAVE_IMAGE_LABEL;
+import static ioc.wiki.processingmanager.data.DataManager.SENSE_DESCRIPCIO;
 import ioc.wiki.processingmanager.excepcions.ProcessingImageException;
 import ioc.wiki.processingmanager.excepcions.ProcessingLoaderException;
 import ioc.wiki.processingmanager.http.HttpCommandSender;
@@ -22,10 +24,10 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.io.File;
 import java.io.StringReader;
-import java.util.ArrayList;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonObject;
+import javax.json.JsonValue;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -51,7 +53,10 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     private final static String N_ALGORISMES_PARAM = "n_algorismes";
     private final static String ALGORISMES_PARAM = "algorismes";
     private final static String ALGORISME_PARAM = "algorisme";
-
+    
+    //FORMS
+    
+    //GENERAL
     private final static String COMMA = ",";
     private final static String SLASH = "/";
     private final static String IMAGE_EXTENSION = ".png";
@@ -273,7 +278,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
      */
     protected String preguntarNomImatge(String error) {
         JPanel form = new JPanel(new GridLayout(0, 1));
-        JLabel jlNom = new JLabel(IMAGE_NAME_LABEL);
+        JLabel jlNom = new JLabel(DataManager.getData(IMAGE_NAME_LABEL));
         JTextField jtfNom = new JTextField(7);
         JLabel jlError = new JLabel(error);
         form.add(jlNom);
@@ -281,7 +286,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         form.add(jlError);
         jlError.setForeground(Color.red);
         int result = JOptionPane.showConfirmDialog(
-                this, form, SAVE_IMAGE_LABEL,
+                this, form, DataManager.getData(SAVE_IMAGE_LABEL),
                 JOptionPane.OK_CANCEL_OPTION,
                 JOptionPane.PLAIN_MESSAGE);
         String nom = jtfNom.getText();
@@ -292,7 +297,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         while (result == JOptionPane.OK_OPTION & nom.isEmpty()) {
             jlError.setText(DataManager.getData(ERROR_CAMP_BUIT));
             result = JOptionPane.showConfirmDialog(
-                    this, form, SAVE_IMAGE_LABEL,
+                    this, form, DataManager.getData(SAVE_IMAGE_LABEL),
                     JOptionPane.OK_CANCEL_OPTION,
                     JOptionPane.PLAIN_MESSAGE);
             nom = jtfNom.getText();
@@ -348,15 +353,14 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 .readArray().getJsonObject(0);
         JsonObject jsonValue = json.getJsonObject(VALUE_PARAM);
         int n_algorismes = jsonValue.getInt(N_ALGORISMES_PARAM);
-
+        System.out.println(jsonValue);
         this.jcbAlgorismes.removeAllItems();
         if (n_algorismes > 0) {
-            ArrayList<Algorisme> algorismes = new ArrayList<>();
             JsonObject jsonAlgorismes = jsonValue.getJsonObject(ALGORISMES_PARAM);
 
             if (n_algorismes == 1) {
-                JsonObject algorisme_json = jsonAlgorismes.getJsonObject(ALGORISME_PARAM);
-                addItemFromJson(algorisme_json);
+                JsonObject algorismeJson = jsonAlgorismes.getJsonObject(ALGORISME_PARAM);
+                addItemFromJson(algorismeJson);
             } else {
                 JsonArray jsonArrayAlgorismes = jsonAlgorismes.getJsonArray(ALGORISME_PARAM);
                 for (int i = 0; i < jsonArrayAlgorismes.size(); i++) {
@@ -365,19 +369,23 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 }
             }
         } else {
-            JOptionPane.showMessageDialog(this, DataManager.getData(DataManager.CAP_ALGORISME));
+            JOptionPane.showMessageDialog(this, DataManager.getData(CAP_ALGORISME));
         }
     }
 
     /**
      * Manipula el json per obtenir un Algorisme i afegirlo al desplegable.
-     * @param algorisme_json un objecte json que conte els elements necessaris per construir un objecte Algorisme.
+     * @param algorismeJson un objecte json que conte els elements necessaris per construir un objecte Algorisme.
      */
-    private void addItemFromJson(JsonObject algorisme_json) {
-        String id = algorisme_json.getJsonObject("@attributes").getString(Algorisme.ID_PARAM);
-        String nom = algorisme_json.getString(Algorisme.NOM_PARAM);
-        String classe = algorisme_json.getString(Algorisme.CLASSE_PARAM);
-        String descripcio = algorisme_json.getString(Algorisme.DESCRIPCIO_PARAM);
+    private void addItemFromJson(JsonObject algorismeJson) {
+        String id = algorismeJson.getJsonObject("@attributes").getString(Algorisme.ID_PARAM);
+        String nom = algorismeJson.getString(Algorisme.NOM_PARAM);
+        String classe = algorismeJson.getString(Algorisme.CLASSE_PARAM);
+        JsonValue jsonDescripcio = algorismeJson.get(Algorisme.DESCRIPCIO_PARAM);
+        String descripcio = DataManager.getData(SENSE_DESCRIPCIO);
+        if (!"{}".equals(jsonDescripcio.toString())){
+            descripcio = algorismeJson.getString(Algorisme.DESCRIPCIO_PARAM);
+        }
         Algorisme algorisme = new Algorisme(id, nom, classe, descripcio);
         jcbAlgorismes.addItem(algorisme);
     }
