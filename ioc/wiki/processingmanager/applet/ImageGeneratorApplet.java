@@ -32,6 +32,10 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.text.AbstractDocument;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.DocumentFilter;
 
 /**
  *
@@ -151,7 +155,9 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
      * @param seed llavor
      */
     public void setSeed(String seed) {
-        this.pdeApplet.setSeed(seed);
+        if(seed!=null && !seed.isEmpty()){
+            this.pdeApplet.setSeed(seed);
+        }
     }
 
     /**
@@ -280,6 +286,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         JPanel form = new JPanel(new GridLayout(0, 1));
         JLabel jlNom = new JLabel(DataManager.getData(IMAGE_NAME_LABEL));
         JTextField jtfNom = new JTextField(7);
+        ((AbstractDocument) jtfNom.getDocument()).setDocumentFilter(new LowerFilter());
         JLabel jlError = new JLabel(error);
         form.add(jlNom);
         form.add(jtfNom);
@@ -674,6 +681,23 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     private javax.swing.JTextArea jtaDescripcio;
     private javax.swing.JTextField jtfLlavor;
     // End of variables declaration//GEN-END:variables
+
+    private static class LowerFilter extends DocumentFilter {
+
+        public void insertString(DocumentFilter.FilterBypass fb, int offset,
+                                    String text, AttributeSet attr) 
+                                                throws BadLocationException {
+            text = text.replaceAll(" ", "_");            
+            fb.insertString(offset, text.toLowerCase(), attr);
+        }
+
+        public void replace(DocumentFilter.FilterBypass fb, int offset, 
+                                int length, String text, AttributeSet attrs) 
+                                                throws BadLocationException {
+            text = text.replaceAll(" ", "_");            
+            fb.replace(offset, length, text.toLowerCase(), attrs);
+        }
+    }
 
     class Algorisme {
 
