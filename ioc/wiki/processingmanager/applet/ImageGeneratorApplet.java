@@ -20,8 +20,14 @@ import ioc.wiki.processingmanager.excepcions.ProcessingLoaderException;
 import ioc.wiki.processingmanager.http.HttpCommandSender;
 import ioc.wiki.processingmanager.http.HttpFileSender;
 import ioc.wiki.processingmanager.loader.PdeLoaderManager;
+import java.awt.BorderLayout;
+import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.Graphics;
 import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Panel;
+import java.awt.ScrollPane;
 import java.io.File;
 import java.io.StringReader;
 import javax.json.Json;
@@ -67,9 +73,12 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     private final static int NAME_NOT_EXISTS_RESPONSE = 2;
     private final static String JAVA_IO_TMPDIR = "java.io.tmpdir";
 
-    PdeLoaderManager pdeLoaderManager;
-    ImageGenerator pdeApplet;
-    HttpFileSender fileSender;
+    private PdeLoaderManager pdeLoaderManager;
+    private ImageGenerator pdeApplet;
+    private HttpFileSender fileSender;
+    private JImagePanel imagePanel;
+    private ScrollPane spImage;
+    private Panel pAppletPanel;
 
     /**
      * Initializes the applet ImageApplet
@@ -102,6 +111,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         /* Create and display the applet */
         try {
             java.awt.EventQueue.invokeAndWait(new Runnable() {
+                @Override
                 public void run() {
                     initComponents();
 
@@ -127,14 +137,21 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                     fileSender.setCookies(getParameter(COOKIES_PARAM));
                     fileSender.setParameter(SECTOK_PARAM, getParameter(SECTOK_PARAM));
                     fileSender.setUrl(getParameter(FILE_SENDER_URL_PARAM));
-
+                    
                     jcbAlgorismes.requestFocusInWindow();
-
+                    
+                    pAppletPanel = new Panel(new BorderLayout());
+                    contentPanel.add(pAppletPanel, BorderLayout.NORTH);
+                    pAppletPanel.setVisible(false);
+                    
+                    spImage = new ScrollPane(ScrollPane.SCROLLBARS_AS_NEEDED);
+                    imagePanel = new JImagePanel();
+                    spImage.add(imagePanel);
+                    contentPanel.add(spImage, BorderLayout.CENTER);
                 }
             });
 
         } catch (Exception ex) {
-//            ex.printStackTrace();
             java.util.logging.Logger.getLogger("ImageGeneratorApplet")
                     .log(java.util.logging.Level.SEVERE, null, ex);
         }
@@ -177,11 +194,9 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
             //Temporal de la que ja estaba per si trobem algun problema.
             ImageGenerator tmp = this.pdeApplet;
             try {
-//                this.jpApplet.remove(this.pdeApplet);
-                this.jpApplet.remove(this.pdeApplet);
+                this.pAppletPanel.remove(this.pdeApplet);
                 this.pdeApplet = generator;
-                this.jpApplet.add(this.pdeApplet);
-//                this.jpApplet.add(this.pdeApplet);
+                this.pAppletPanel.add(this.pdeApplet, BorderLayout.CENTER);
             } catch (Exception ex) {
                 this.pdeApplet = tmp;
                 throw new ProcessingLoaderException(ex);
@@ -190,7 +205,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
 
         } else {//Encara no haviem generat cap imatge
             this.pdeApplet = generator;
-            this.jpApplet.add(this.pdeApplet);
+            this.pAppletPanel.add(this.pdeApplet, BorderLayout.CENTER);
         }
     }
 
@@ -205,12 +220,11 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
             ImageGenerator imageGenerator = pdeLoaderManager.getNewInstance(className);
             setImageGenerator(imageGenerator);
             setSeed(this.jtfLlavor.getText());
-            this.pdeApplet.init();
-            this.jpApplet.setSize(pdeApplet.getHeight(), pdeApplet.getWidth());
+            this.imagePanel.setSize(contentPanel.getWidth(), contentPanel.getHeight());
+            this.pdeApplet.generateAwtImage(imagePanel);
         } catch (ProcessingLoaderException ex) {
             //MOSTRAR L'ERROR EN L'APPLET.
             JOptionPane.showMessageDialog(this, DataManager.getData(ERROR_GENERAR_IMATGE));
-//            ex.printStackTrace();
             java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
     }
@@ -232,7 +246,6 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
             } catch (ProcessingImageException ex) {
                 image = null;
                 JOptionPane.showMessageDialog(this, DataManager.getData(ERROR_DESAR_IMATGE));
-//                ex.printStackTrace();
                 java.util.logging.Logger.getLogger(ImageGeneratorApplet.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             }
             if (image != null) {
@@ -334,7 +347,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         String path = System.getProperty(JAVA_IO_TMPDIR)+SLASH+imageName;
         try {
             this.pdeApplet.loadPixels();
-            this.pdeApplet.save(path);
+            this.pdeApplet.save(path);          
             image = this.pdeApplet.loadBytes(path);
         } catch (Exception ex) {
             throw new ProcessingImageException(ex);
@@ -439,8 +452,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         jlImatge = new javax.swing.JLabel();
         jbGenerar = new javax.swing.JButton();
         jbDesar = new javax.swing.JButton();
-        jScrollImage = new javax.swing.JScrollPane();
-        jpApplet = new javax.swing.JPanel();
+        contentPanel = new java.awt.Panel();
 
         jpButtons.setPreferredSize(new java.awt.Dimension(290, 459));
 
@@ -496,7 +508,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 .addGap(30, 30, 30)
                 .addComponent(jlDescripcio)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jspDescripcio, javax.swing.GroupLayout.DEFAULT_SIZE, 97, Short.MAX_VALUE))
+                .addComponent(jspDescripcio, javax.swing.GroupLayout.DEFAULT_SIZE, 129, Short.MAX_VALUE))
         );
 
         jpLlavorButtons.setBorder(new javax.swing.border.SoftBevelBorder(javax.swing.border.BevelBorder.RAISED));
@@ -567,15 +579,17 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         jpImageButtonsLayout.setHorizontalGroup(
             jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jpImageButtonsLayout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jbGenerar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jbDesar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jpImageButtonsLayout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jbGenerar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                        .addComponent(jbDesar, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jpImageButtonsLayout.createSequentialGroup()
+                        .addGap(100, 100, 100)
+                        .addComponent(jlImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
-            .addGroup(jpImageButtonsLayout.createSequentialGroup()
-                .addGap(100, 100, 100)
-                .addComponent(jlImatge, javax.swing.GroupLayout.PREFERRED_SIZE, 55, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jpImageButtonsLayout.setVerticalGroup(
             jpImageButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -602,7 +616,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         jpButtonsLayout.setVerticalGroup(
             jpButtonsLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
             .addGroup(jpButtonsLayout.createSequentialGroup()
-                .addComponent(jpAlgorismesButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 206, Short.MAX_VALUE)
+                .addComponent(jpAlgorismesButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 238, Short.MAX_VALUE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jpLlavorButtons, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(17, 17, 17)
@@ -610,34 +624,21 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
                 .addContainerGap())
         );
 
-        jpApplet.setFocusable(false);
-
-        javax.swing.GroupLayout jpAppletLayout = new javax.swing.GroupLayout(jpApplet);
-        jpApplet.setLayout(jpAppletLayout);
-        jpAppletLayout.setHorizontalGroup(
-            jpAppletLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 530, Short.MAX_VALUE)
-        );
-        jpAppletLayout.setVerticalGroup(
-            jpAppletLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 465, Short.MAX_VALUE)
-        );
-
-        jScrollImage.setViewportView(jpApplet);
+        contentPanel.setLayout(new java.awt.BorderLayout());
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addComponent(jScrollImage, javax.swing.GroupLayout.DEFAULT_SIZE, 532, Short.MAX_VALUE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 543, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jpButtons, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jpButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 467, Short.MAX_VALUE)
-            .addComponent(jScrollImage)
+            .addComponent(jpButtons, javax.swing.GroupLayout.DEFAULT_SIZE, 499, Short.MAX_VALUE)
+            .addComponent(contentPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
     }// </editor-fold>//GEN-END:initComponents
 
@@ -663,7 +664,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollImage;
+    private java.awt.Panel contentPanel;
     private javax.swing.JButton jbBuidarLlavor;
     private javax.swing.JButton jbDesar;
     private javax.swing.JButton jbGenerar;
@@ -673,7 +674,6 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
     private javax.swing.JLabel jlImatge;
     private javax.swing.JLabel jlLlavor;
     private javax.swing.JPanel jpAlgorismesButtons;
-    private javax.swing.JPanel jpApplet;
     private javax.swing.JPanel jpButtons;
     private javax.swing.JPanel jpImageButtons;
     private javax.swing.JPanel jpLlavorButtons;
@@ -699,7 +699,7 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         }
     }
 
-    class Algorisme {
+    private class Algorisme {
 
         private final static String ID_PARAM = "id";
         private final static String NOM_PARAM = "nom";
@@ -741,6 +741,60 @@ public class ImageGeneratorApplet extends javax.swing.JApplet {
         @Override
         public String toString() {
             return this.nom;
+        }
+    }
+
+    private class JImagePanel extends Canvas{
+        Image image=null;
+        int width;
+        int height;
+        
+        public void setData(Image img, int w, int h){
+            image = img;
+            width=w;
+            height=h;
+            repaint();
+        }
+
+        public void setData(Image img){
+            int w;
+            int h;
+            if(img.getWidth(null)!=-1 && img.getHeight(null)!=-1){
+                w=img.getWidth(null);
+                h=img.getHeight(null);
+                if(w>getWidth() && h>getHeight()){
+                    if(w<=h){
+                        float rel = ((float)getWidth())/((float)w);
+                        w=getWidth();
+                        h*=rel;
+                    }else{
+                        float rel = ((float)getHeight())/((float)h);
+                        h=getHeight();
+                        w*=rel;                        
+                    }
+                }
+            }else{
+                w=getWidth();
+                h=getHeight();
+            }
+            if(w>getWidth() || h>getHeight()){
+                setSize(w, h);
+            }            
+            setData(img, w, h);
+        }
+
+        @Override
+        public void paint(Graphics g) {
+            super.paint(g); 
+            if(image!=null){
+                g.drawImage(image, 0, 0, width, height, this);
+            }
+        }
+
+        @Override
+        public boolean imageUpdate(Image img, int infoflags, int x, int y, int w, int h) {
+            setData(img);
+            return true;
         }
     }
 }
